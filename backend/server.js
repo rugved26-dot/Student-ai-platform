@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middlewares
-app.use(cors());
+app.use(cors({ origin: "https://student-ai-platform-rose.vercel.app/" }));
 app.use(express.json());
 
 // Routes
@@ -17,6 +17,10 @@ app.get('/', (req, res) => {
   res.send('Student AI Platform Backend API is running!');
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
+
+module.exports = app;

@@ -26,7 +26,7 @@ export default function TopicSearch() {
     setData(null);
 
     try {
-      const response = await fetch('http://localhost:5000/api/search', {
+      const response = await fetch('https://student-ai-platform-bnnh.vercel.app/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic })
@@ -53,10 +53,10 @@ export default function TopicSearch() {
 
         <form onSubmit={handleSearch} className="search-box glass-card animate-in delay-100" style={{ padding: '1rem', display: 'flex', gap: '1rem' }}>
           <Search style={{ color: 'var(--text-muted)', alignSelf: 'center', marginLeft: '0.5rem' }} />
-          <input 
-            type="text" 
-            placeholder="e.g., Quantum Physics, React Hooks, Cellular Respiration..." 
-            className="input-primary" 
+          <input
+            type="text"
+            placeholder="e.g., Quantum Physics, React Hooks, Cellular Respiration..."
+            className="input-primary"
             value={topic}
             onChange={handleTopicChange}
             style={{ border: 'none', background: 'transparent', flexGrow: 1 }}
@@ -79,10 +79,10 @@ export default function TopicSearch() {
                 <h3 style={{ marginBottom: '1rem' }}>Recommended Videos</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
                   {data.recommendedVideos.map((video, idx) => (
-                    <a 
-                      key={idx} 
+                    <a
+                      key={idx}
                       href={`https://www.youtube.com/results?search_query=${encodeURIComponent(video.query || video.title)}`}
-                      target="_blank" 
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="video-link-card"
                     >
@@ -98,12 +98,12 @@ export default function TopicSearch() {
             )}
 
             <div className="glass-card" style={{ padding: '2rem 3rem' }}>
-               <h3 style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '1rem', marginBottom: '1.5rem', color: 'var(--brand-primary)' }}>
-                 Generated Notes
-               </h3>
-               <div className="markdown-content">
-                 <Markdown>{data.notes}</Markdown>
-               </div>
+              <h3 style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '1rem', marginBottom: '1.5rem', color: 'var(--brand-primary)' }}>
+                Generated Notes
+              </h3>
+              <div className="markdown-content">
+                <Markdown>{data.notes}</Markdown>
+              </div>
             </div>
           </div>
         )}

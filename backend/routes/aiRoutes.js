@@ -2,11 +2,10 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const { GoogleGenAI } = require('@google/genai');
-const pdfParse = require('pdf-parse');
+
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-// It will pick up GEMINI_API_KEY from environment variables via require('dotenv').config() in server.js
 const aiOptions = process.env.GEMINI_API_KEY ? { apiKey: process.env.GEMINI_API_KEY } : {};
 const ai = new GoogleGenAI(aiOptions);
 
@@ -46,31 +45,30 @@ router.post('/summarize', upload.single('document'), async (req, res) => {
 
   try {
     let textContent = '';
-    // Check if uploaded file is PDF
+
     if (req.file.mimetype === 'application/pdf') {
-       try {
-         const parser = typeof pdfParse === 'function' ? pdfParse : (pdfParse.default || pdfParse.PDFParse);
-         const pdfData = typeof parser === 'function' ? await parser(req.file.buffer) : { text: req.file.buffer.toString('utf8') };
-         textContent = pdfData.text;
-       } catch (e) {
-         console.error('PDF parsing error:', e);
-         textContent = req.file.buffer.toString('utf8');
-       }
+      try {
+
+        const pdfParse = require('pdf-parse/lib/pdf-parse'); // bypasses the test file loading
+        const pdfData = await pdfParse(req.file.buffer);
+        textContent = pdfData.text;
+      } catch (e) {
+        console.error('PDF parsing error:', e);
+        textContent = req.file.buffer.toString('utf8');
+      }
     } else {
-       // Provide a basic text fallback
-       textContent = req.file.buffer.toString('utf8');
+      textContent = req.file.buffer.toString('utf8');
     }
 
     if (!textContent || textContent.trim() === '') {
-       return res.status(400).json({ error: 'Could not extract text from document.' });
+      return res.status(400).json({ error: 'Could not extract text from document.' });
     }
 
     const prompt = `Please provide a clear, concise, and structured summary of the following educational document content. 
     Focus on the main ideas, key takeaways, and definitions. Format it beautifully using markdown.
     
     Document Content:
-    ${textContent.substring(0, 50000)}
-    `;
+    ${textContent.substring(0, 50000)}`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -78,7 +76,7 @@ router.post('/summarize', upload.single('document'), async (req, res) => {
     });
 
     res.json({ summary: response.text });
-  } catch(error) {
+  } catch (error) {
     console.error('Error summarizing document:', error);
     res.status(500).json({ error: 'Failed to summarize document' });
   }

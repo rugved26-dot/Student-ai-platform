@@ -40,7 +40,7 @@ export default function DocSummarizer() {
     formData.append('document', file);
 
     try {
-      const response = await fetch('http://localhost:5000/api/summarize', {
+      const response = await fetch('https://student-ai-platform-bnnh.vercel.app/', {
         method: 'POST',
         body: formData,
       });
