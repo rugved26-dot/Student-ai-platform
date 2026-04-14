@@ -26,7 +26,7 @@ export default function TopicSearch() {
     setData(null);
 
     try {
-      const response = await fetch('https://student-ai-platform-bnnh.vercel.app/', {
+      const response = await fetch('https://student-ai-platform-bnnh.vercel.app/api/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic })

@@ -6,7 +6,10 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middlewares
-app.use(cors({ origin: "https://student-ai-platform-rose.vercel.app/" }));
+app.use(cors({
+  origin: "https://student-ai-platform-rose.vercel.app",
+  optionsSuccessStatus: 200
+}));
 app.use(express.json());
 
 // Routes

@@ -32,7 +32,11 @@ router.post('/search', async (req, res) => {
       }
     });
 
-    const parsedData = JSON.parse(response.text);
+    let text = response.text;
+    if (text.startsWith('```json')) {
+      text = text.replace(/^```json\n?/, '').replace(/\n?```\s*$/, '');
+    }
+    const parsedData = JSON.parse(text);
     res.json(parsedData);
   } catch (error) {
     console.error('Error generating notes:', error);
